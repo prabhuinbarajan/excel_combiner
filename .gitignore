@@ -134,3 +134,8 @@ venv
 *.xlsx
 *checkpoint.ipynb
 .ipynb
+report_samples/*
+config/*
+results/*
+
+~$*

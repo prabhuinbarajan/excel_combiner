@@ -5,9 +5,9 @@ from openpyxl.formula.translate import Translator
 
 # File to be copied
 workbook = 'A510_TB_Multiple BUs_LC_All_BUS'
-workbook_url = '{}.xlsx'.format(workbook)
+workbook_url = 'report_samples/{}.xlsx'.format(workbook)
 workbook_template = 'templates/{}.xltx' .format(workbook)
-result_workbook = '{}_combined.xlsx'.format(workbook)
+result_workbook = 'results/{}_combined.xlsx'.format(workbook)
 
 wb = openpyxl.load_workbook(workbook_url)  # Add file name
 
