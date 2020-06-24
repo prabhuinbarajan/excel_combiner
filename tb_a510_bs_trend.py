@@ -35,11 +35,7 @@ def pasteRange(ws, rows, startRow,totalsFrom, title=''):
                 column_letter =  ws.cell(row=startRow, column=c_idx).column_letter
                 range_text = column_letter +str(startRow+1) + ":" + column_letter+str(lastRow)
                 ws.cell(row=lastRow+1, column=c_idx,  value='=SUM('+range_text + ')')
-
-    #range_text = range_text + ':' + ws.cell(row=lastRow+1, column=lastCol+1).coordinate
-    #return range_text
-
-
+    return lastRow+1, lr
 
 
 p2020_data_file = 'report_samples/Actual-P1-P5-2020.csv'
@@ -64,9 +60,9 @@ df_2020= df_2020.loc[:, ~df_2020.columns.str.contains('^Unnamed')]
 
 df_2019['AffiliateRollup'] = df_2019['Affiliate'].str.slice(0, 4, 1)
 df_2020['AffiliateRollup'] = df_2020['Affiliate'].str.slice(0, 4, 1)
-#df_2019.groupby(['Account', 'AffiliateRollup']).agg({'P1 2019':'sum','P2 2019':'sum'})
 
-result = pd.merge(df_2019, df_2020, how='outer', on=['Account', 'AffiliateRollup', 'Affiliate'])
+#result = pd.merge(df_2019, df_2020, how='outer', on=['Account', 'AffiliateRollup', 'Affiliate'])
+result = pd.concat([df_2019, df_2020])
 result.drop(['Affiliate'], axis=1, inplace=True)
 result.rename(columns = {'AffiliateRollup':'Affiliate'}, inplace = True)
 
@@ -78,8 +74,6 @@ aggregate_columns = {columns[i]: 'sum' for i in range(0, len(columns))}
 
 
 result = pd.merge(result, account_meta, how='left', on=['Account'])
-
-#result['AC'] = account_meta.lookup(account_meta.index, account_meta['AC'])
 
 agg_result = result.groupby(['AC', 'Account', 'Affiliate']).agg(aggregate_columns).reset_index()
 sub_totals = result.groupby(['AC']).agg(aggregate_columns).reset_index()
@@ -106,48 +100,34 @@ target = openpyxl.load_workbook(workbook_template)
 target.template = False
 sheet = target['Sheet']
 
-#writer = pd.ExcelWriter(result_workbook, engine='xlsxwriter')
-
 column_header = pd.DataFrame(columns=final_result.columns)
 column_header.drop(['AC'], axis = 1, inplace=True)
 header_rows = dataframe_to_rows(column_header, index=False, header=True)
 pasteRange(sheet, header_rows, 8,-1)
 
-dict_tables = {}
-for table in sheet._tables :
-    dict_tables[table.name] = table
-
-table_ranges = {}
 startRow = 9
+rows = None
+totalRows = {}
+lastRowRecord = None
 for asset_category in ['Assets', 'Liabilities','Equities']:
     ac_results = final_result[final_result['AC'] == asset_category]
     ac_results = ac_results.drop(['AC'], axis=1)
     rows = dataframe_to_rows(ac_results, index=False, header=False)
-    #range_text = pasteRange(sheet, rows, startRow)
-    pasteRange(sheet, rows, startRow, 5, 'Total '+ asset_category)
+    lr , lastRowRecord = pasteRange(sheet, rows, startRow, 5, 'Total '+ asset_category)
+    totalRows[asset_category] = lr
     startRow += ac_results.shape[0]+1
-    #dict_tables[asset_category].ref = range_text
-    #table_ranges[asset_category] = range_text
-      #sub_total_results = sub_totals[sub_totals['AC']==asset_category]
-      #sub_total_results = sub_total_results.drop(['AC'], axis=1)
 
-      #if first:
-      #    ac_results.to_excel(writer, sheet_name='Sheet1', index=False, startrow=startRow)
-      #    first = False
-      #    startRow += ac_results.shape[0]+1
 
-      #else:
-      #    ac_results.to_excel(writer, sheet_name='Sheet1', header=False, index=False, startrow=startRow)
-      #    startRow += ac_results.shape[0]
+for c_idx, value in enumerate(lastRowRecord,1):
+    if c_idx == 1 :
+        sheet.cell(row=startRow + 2, column=c_idx, value='check figure')
 
-      #sub_total_results.to_excel(writer, sheet_name='Sheet1',  header=False,  index=False, startrow=startRow)
-      #startRow += sub_total_results.shape[0]
-
-#check_figure.to_excel(writer, sheet_name='Sheet1', header=False,  index=False,startrow=startRow)
-#for table in sheet._tables :
-#    table.ref = table_ranges[table.name]
-#    table.totalsRowShown = True
-
+    if c_idx > 5:
+        column_letter = sheet.cell(row=startRow+2, column=c_idx).column_letter
+        range_text = column_letter + str(totalRows['Assets']) + \
+                     '+' + column_letter + str(totalRows['Liabilities']) + \
+                     '+' + column_letter + str(totalRows['Equities'])
+        sheet.cell(row=startRow+2, column=c_idx,  value='=' + range_text )
 
 target.save(result_workbook)
 print(agg_result)
