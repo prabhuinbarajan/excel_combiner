@@ -51,5 +51,5 @@ def mergeColumns():
 target = openpyxl.load_workbook(workbook_template)
 target.template = False
 #target = copy(wb_template)
-temp_sheet = target.get_sheet_by_name('Sheet')
+temp_sheet = target['Sheet']
 mergeColumns()
