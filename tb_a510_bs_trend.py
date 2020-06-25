@@ -79,7 +79,7 @@ df_CY_agg_sum = getCumulativePLYTD(df_CY)
 
 
 df_net_rev_agg = pd.concat([df_PY_agg_sum , df_CY_agg_sum])
-df_net_rev_agg ['Account'] = '-999999'
+df_net_rev_agg ['Account'] = '9999999'
 df_net_rev_agg ['AffiliateRollup'] = ''
 df_net_rev_agg ['Affiliate'] = ''
 df_net_rev_agg = df_net_rev_agg.to_frame().T
