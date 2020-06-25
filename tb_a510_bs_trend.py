@@ -38,9 +38,10 @@ def pasteRange(ws, rows, startRow,totalsFrom, title=''):
     return lastRow+1, lr
 
 
-p2020_data_file = 'report_samples/Actual-P1-P5-2020.csv'
-p2019_data_file = 'report_samples/Actual-P1-P13-2019.csv'
+pCY_data_file = 'report_samples/Actual-P1-P5-2020.csv'
+pPY_data_file = 'report_samples/Actual-P1-P13-2019.csv'
 interested_period = 'P4 2020'
+period_end_date = '4/18/2020'
 num_periods = 13
 account_meta = 'config/account_meta.csv'
 workbook = 'A510-MOEND_606'
@@ -51,18 +52,40 @@ period_columns_regex = re.compile(r'^P[0-9]*')
 
 account_meta = pd.read_csv(account_meta, dtype=str)
 
-df_2019 = pd.read_csv(p2019_data_file)
-df_2019= df_2019.loc[:, ~df_2019.columns.str.contains('^Unnamed')]
-df_2019.drop(['Department', 'Company', 'Budget Entity'], axis=1, inplace=True)
-df_2020 = pd.read_csv(p2020_data_file)
-df_2020.drop(['Department', 'Company', 'Budget Entity'], axis=1, inplace=True)
-df_2020= df_2020.loc[:, ~df_2020.columns.str.contains('^Unnamed')]
+df_PY = pd.read_csv(pPY_data_file)
+df_PY= df_PY.loc[:, ~df_PY.columns.str.contains('^Unnamed')]
+df_PY.drop(['Department', 'Company', 'Budget Entity'], axis=1, inplace=True)
+df_PY['ac1'] = pd.to_numeric(df_PY['Account'], errors='coerce')
+df_CY = pd.read_csv(pCY_data_file)
+df_CY.drop(['Department', 'Company', 'Budget Entity'], axis=1, inplace=True)
+df_CY= df_CY.loc[:, ~df_CY.columns.str.contains('^Unnamed')]
+df_CY['ac1'] = pd.to_numeric(df_CY['Account'], errors='coerce')
 
-df_2019['AffiliateRollup'] = df_2019['Affiliate'].str.slice(0, 4, 1)
-df_2020['AffiliateRollup'] = df_2020['Affiliate'].str.slice(0, 4, 1)
 
-#result = pd.merge(df_2019, df_2020, how='outer', on=['Account', 'AffiliateRollup', 'Affiliate'])
-result = pd.concat([df_2019, df_2020])
+df_PY['AffiliateRollup'] = df_PY['Affiliate'].str.slice(0, 4, 1)
+df_CY['AffiliateRollup'] = df_CY['Affiliate'].str.slice(0, 4, 1)
+
+
+def getCumulativePLYTD(df):
+
+    df_col_l = list(filter(lambda i: period_columns_regex.match(i), df.columns))
+    df_period_columns = dict(zip(df_col_l, map(lambda x: 'sum', df_col_l)))
+    df_agg_sum = df[(df['ac1'] >= 400000) & (df['ac1'] <= 999999)].agg(df_period_columns).cumsum()
+    return df_agg_sum
+
+
+df_PY_agg_sum = getCumulativePLYTD(df_PY)
+df_CY_agg_sum = getCumulativePLYTD(df_CY)
+
+
+df_net_rev_agg = pd.concat([df_PY_agg_sum , df_CY_agg_sum])
+df_net_rev_agg ['Account'] = '-999999'
+df_net_rev_agg ['AffiliateRollup'] = ''
+df_net_rev_agg ['Affiliate'] = ''
+df_net_rev_agg = df_net_rev_agg.to_frame().T
+
+#result = pd.merge(df_PY, df_CY, how='outer', on=['Account', 'AffiliateRollup', 'Affiliate'])
+result = pd.concat([df_PY, df_CY,df_net_rev_agg])
 result.drop(['Affiliate'], axis=1, inplace=True)
 result.rename(columns = {'AffiliateRollup':'Affiliate'}, inplace = True)
 
@@ -128,7 +151,7 @@ for c_idx, value in enumerate(lastRowRecord,1):
                      '+' + column_letter + str(totalRows['Liabilities']) + \
                      '+' + column_letter + str(totalRows['Equities'])
         sheet.cell(row=startRow+2, column=c_idx,  value='=' + range_text )
-
+sheet['A7'] = period_end_date
 target.save(result_workbook)
 print(agg_result)
 
