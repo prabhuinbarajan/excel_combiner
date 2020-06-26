@@ -13,8 +13,8 @@ def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData, r
         for j in range(startCol, endCol , 1):
             source = copiedData.cell(row=countRow+ rowOffset, column=countCol)
             target = sheetReceiving.cell(row=i, column=j)
-            #if type(cell).__name__ == 'MergedCell':
-
+            #if type(target).__name__ == 'MergedCell':
+            #    print('hello')
             if source.data_type == 'f':
                 target.value = Translator(source.value, source.coordinate).translate_formula(target.coordinate)
             else :
@@ -37,14 +37,18 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
 
     print("Processing...")
     itemList = list(filter(lambda i: regex_filter.match(i), workbook.sheetnames))
+    firstSheet = None
     for sn in itemList:
         sheet1 = workbook[sn]  # Add Sheet name
+        firstSheet = sheet1 if sheet1 == None else sheet1
         endCol = sheet1.max_column
         endRow = startRow+ sheet1.max_row-initialRowOffset-postRowShrinkage
         print('sc:{} sr: {} ec: {} er: {} sn: {}'.format(startCol, startRow, endCol, endRow,  sn))
         pasteRange(startCol, startRow, endCol, endRow,
                                   worksheet, sheet1, initialRowOffset)  # Change the 4 number values
         startRow=endRow
+        #break
 
     # You can save the template as another file to create a new file here too.s
     print("Range copied and pasted!")
+    return firstSheet
