@@ -36,11 +36,11 @@ ytd_regex = re.compile(r'^.*\-YTD')
 target = openpyxl.load_workbook(workbook_template)
 target.template = False
 #target = copy(wb_template)
-basesheet = createMergedSheet(target['YTD'], ytd_regex, ytd_wb, 1, 13, 9, 9 )
+basesheet,er = createMergedSheet(target['YTD'], ytd_regex, ytd_wb, 1, 13, 9, 9 )
 apply_match_to_sheet(basesheet, target['YTD'])
-basesheet=createMergedSheet(target['MTD'], mtd_regex, mtd_wb, 1, 13, 9, 9)
+basesheet,er=createMergedSheet(target['MTD'], mtd_regex, mtd_wb, 1, 13, 9, 9)
 apply_match_to_sheet(basesheet, target['MTD'])
-basesheet=createMergedSheet(target['QTD'], qtd_regex, qtd_wb, 1, 13, 9, 9)
+basesheet,er=createMergedSheet(target['QTD'], qtd_regex, qtd_wb, 1, 13, 9, 9)
 apply_match_to_sheet(basesheet, target['QTD'])
 
 
