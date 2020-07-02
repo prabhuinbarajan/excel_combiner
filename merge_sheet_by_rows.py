@@ -8,12 +8,13 @@ from openpyxl.styles import PatternFill, Font
 
 defaultFill = PatternFill("solid", fgColor="DDDDDD")
 
-thick_top_border = Border(top=Side(style='thick'))
-bold_font = Font(bold=True)
+thick_top_border = Border(top=Side(style='thin'))
+bold_font = Font(size=8 , bold=True)
 
 def apply_grand_total(grandtotalRows, worksheet, endRow , startCol , endCol, referenceRow,  grandTotalTitle = "Total"):
     row = worksheet[endRow]
     row[0].value = grandTotalTitle
+    row[0].font = bold_font
     for j in range(startCol, endCol):
         target = row[j]
         source = referenceRow[j]
@@ -25,7 +26,7 @@ def apply_grand_total(grandtotalRows, worksheet, endRow , startCol , endCol, ref
                 sumFormula = sumRow[j].coordinate if sumFormula == '' else sumFormula + '+' + sumRow[j].coordinate
             target.value = "=SUM(" + sumFormula + ")"
         copy_style(source, target)
-    apply_style([row])
+    apply_style([row], startCol=startCol, endCol=endCol)
 
 
 def copy_style (source, target):
@@ -43,9 +44,13 @@ def add_separator(sheetReceiving, startCol, row, endCol, fill=defaultFill):
         target = sheetReceiving.cell(row=row, column=j)
         target.fill = copy(fill)
 
-def apply_style(rows, border=thick_top_border, font=bold_font):
+def apply_style(rows, border=thick_top_border, font=bold_font, startCol = 0, endCol=-1):
+
     for row in rows:
-        for cell in row:
+        if endCol == -1:
+            endCol = row[-1].column
+        for j in range(startCol, endCol):
+            cell = row[j]
             if border:
                 cell.border = border
             if font:
@@ -121,7 +126,7 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
             if grandTotal:
                 listOfSubTotals.append(listRowSubTotal)
             rows = [worksheet[startRow - 1]]
-            apply_style(rows, border=None)
+            apply_style(rows, border=None )
 
             if len(itemList) == 1:
                 if grandTotalTitle:
@@ -137,6 +142,7 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
     if grandTotal:
         startCell = worksheet.cell(row=endRow, column=1)
         startCell.value = "Total" if grandTotalTitle is None else grandTotalTitle
+        startCell.font = bold_font
         grandTotalList = []
         if subtotalRows:
             temp = []
@@ -159,7 +165,7 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
             copy_style(source, target)
 
         rows = [worksheet[endRow]]
-        apply_style(rows)
+        apply_style(rows, startCol=totalColOffset-1, endCol=endCol)
 
 
 

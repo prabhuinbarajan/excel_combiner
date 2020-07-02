@@ -56,8 +56,7 @@ for timeframe in timeframes:
                 first = False
         add_separator(worksheet,startCol=1, endCol=26,row=max_row+1)
         max_row+=1
+    apply_grand_total(grandtotalRows, worksheet, max_row, 5 ,26, worksheet[10], grandTotalTitle="Total BHN" )
+    add_separator(worksheet,startCol=1, endCol=26,row=max_row)
 
-
-apply_grand_total(grandtotalRows, worksheet, max_row, 5 ,26, worksheet[10], grandTotalTitle="Total BHN" )
-add_separator(worksheet,startCol=1, endCol=26,row=max_row)
 target.save(result_workbook)
