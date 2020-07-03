@@ -14,5 +14,6 @@ wb = openpyxl.load_workbook(workbook_url)  # Add file name
 target = openpyxl.load_workbook(workbook_template)
 target.template = False
 target_sheet = target['BS Seg Total']
-mergeColumns(wb, target_sheet)
+mergeColumns(wb, target_sheet , startRowOffset=9, sourceStartRowOffset=9, sourceStartColOffset=5,
+             sourceEndColOffset=8, columnGap=2, enableGrouping=True, sourceEndRowOffset=7)
 target.save(result_workbook)
