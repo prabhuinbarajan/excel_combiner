@@ -170,5 +170,5 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
 
 
     # You can save the template as another file to create a new file here too.s
-    print("Range copied and pasted!")
+    print("Range transferred!")
     return firstSheet, endRow
