@@ -7,15 +7,18 @@ config = configparser.ConfigParser()
 print(os.path.dirname(os.path.realpath(__file__)))
 ini_file = os.path.dirname(os.path.realpath(__file__)) + os.path.sep + 'cfg.ini'
 config.read(ini_file)
-print("Script :" + sys.argv[0])
-env = sys.argv[1]
-myyear = sys.argv[3]
-myper = sys.argv[2]
-def get_config(env='PROD',myyear=datetime.today().strftime("%Y"),myper='01'):
+
+def get_config(env='PROD'):
+    defaults_dic = {'year':datetime.today().strftime('%Y'),'per':'01'}
+    if env is None :
+        env = 'PROD'
     input_path = config.get(env, 'input_path')
     template_path = config.get(env, 'template_path')
     output_path = config.get(env, 'output_path')
-
+    myyear = config.get(env,'year',fallback=defaults_dic['year'])
+    myper = config.get(env,'per',fallback=defaults_dic['per'])
+#    myyear = year if year else defaults_dic['year']
+#    myper = per if per else defaults_dic['per']
     if env == 'DEV1' or env == 'DEV3':
         print("No parsing of period and year folders required based on " + env + " Environment parameter")
     elif env == 'DEV2' or env == 'QA' or env == 'PROD_TEST' or env == 'PROD':
@@ -26,4 +29,4 @@ def get_config(env='PROD',myyear=datetime.today().strftime("%Y"),myper='01'):
         print("Environment parameter is not matching")
 
     print("input path = " + input_path)
-    return (input_path,template_path,output_path)
+    return (input_path,template_path,output_path,myyear,myper)
