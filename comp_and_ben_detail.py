@@ -1,15 +1,20 @@
 from merge_sheet_by_rows import *
 import pandas as pd
+from config_reader import *
 
-
+(input_path,template_path,output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 
 # File to be copied
 workbook_base = 'Comp & Benefit Detail'
-period = 'P5 2020'
-workbook = '{} {}'.format(workbook_base, period)
-workbook_url = 'report_samples/{}.xlsx'.format(workbook)
-workbook_template = 'templates/{}.xltx' .format(workbook_base)
-result_workbook = 'results/{}-{}-combined.xlsx'.format(workbook_base, period)
+workbook = fnmatch.filter(os.listdir(input_path), '*Comp & Benefit Detail*')
+workbook1 = workbook[0]
+print("File Names are " + workbook[0])
+workbook_url = r'{}{}'.format(input_path,workbook[0])
+print("Workbook URLs are " + workbook_url)
+workbook_template = r'{}{}.xltx' .format(template_path,workbook_base)
+print("Template URL is " + workbook_template)
+result_workbook = r'{}{}_combined.xlsx'.format(output_path,workbook1.rsplit('.',1)[0])
+print("Result workbook URLs are " + result_workbook)
 
 
 
