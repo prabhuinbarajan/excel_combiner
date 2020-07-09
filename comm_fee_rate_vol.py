@@ -1,28 +1,34 @@
 from merge_sheet_by_rows import *
+from config_reader import *
 
 # Prepare the spreadsheets to copy from and paste too.
 
 def apply_match_to_sheet(source, destination) :
-    match = re.search('(.*) Actual vs (.*) - (.*)', source['A4'].value)
+    match = re.search('(.*)Actual vs(.*)-(.*)', source['A4'].value)
     destination['A7'].value = match.group(1) if match else None
     destination['A6'].value = match.group(2) if match else None
     #destination['A8'].value = match.group(3) if match else None
 
-
+(input_path,template_path,output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 # File to be copied
+
+mtd_workbook = fnmatch.filter(os.listdir(input_path), '*Comm and Fee Rate Volume-MTD*')
+qtd_workbook = fnmatch.filter(os.listdir(input_path), '*Comm and Fee Rate Volume-QTD*')
+ytd_workbook = fnmatch.filter(os.listdir(input_path), '*Comm and Fee Rate Volume-YTD*')
+print("File Names are " + mtd_workbook[0] + ", " + qtd_workbook[0] + ", " + ytd_workbook[0])
+
 workbook_base = 'Comm and Fee Rate Volume'
-period = 'P5 2020'
 
-mtd_workbook = '{}-MTD-{}'.format(workbook_base, period)
-qtd_workbook = '{}-QTD-{}'.format(workbook_base, period)
-ytd_workbook = '{}-YTD-{}'.format(workbook_base, period)
+mtd_workbook_url = r'{}{}'.format(input_path,mtd_workbook[0])
+ytd_workbook_url = r'{}{}'.format(input_path,ytd_workbook[0])
+qtd_workbook_url = r'{}{}'.format(input_path,qtd_workbook[0])
+print("Workbook URLs are " + mtd_workbook_url + ", " + ytd_workbook_url + ", " + qtd_workbook_url)
 
-mtd_workbook_url = 'report_samples/{}.xlsx'.format(mtd_workbook)
-qtd_workbook_url = 'report_samples/{}.xlsx'.format(qtd_workbook)
-ytd_workbook_url = 'report_samples/{}.xlsx'.format(ytd_workbook)
+workbook_template = r'{}{}.xltx' .format(template_path,workbook_base)
+print("Template URL is " + workbook_template)
 
-workbook_template = 'templates/{}.xltx' .format(workbook_base)
-result_workbook = 'results/{}-{}-combined.xlsx'.format(workbook_base, period)
+result_workbook = r'{}P{} {} HA06_{}_combined.xlsx'.format(output_path,myper,myyear,workbook_base)
+print("Result workbook URLs are " + result_workbook)
 
 mtd_wb = openpyxl.load_workbook(mtd_workbook_url)  # Add file name
 qtd_wb = openpyxl.load_workbook(qtd_workbook_url)  # Add file name
