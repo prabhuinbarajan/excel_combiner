@@ -1,26 +1,26 @@
 from merge_sheet_by_rows import *
 from config_reader import *
 
-(input_path,template_path,output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
+(TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 # File to be copied
-workbook1 = fnmatch.filter(os.listdir(input_path), '*Intl Vol Rate - Asia*')
-workbook2 = fnmatch.filter(os.listdir(input_path), '*Intl Vol Rate - YTD*')
-workbook3 = fnmatch.filter(os.listdir(input_path), '*Intl Vol Rate - MTD*')
-workbook4 = fnmatch.filter(os.listdir(input_path), '*Intl Vol Rate - QTD*')
+workbook1 = fnmatch.filter(os.listdir(PL_input_path), '*Intl Vol Rate - Asia*')
+workbook2 = fnmatch.filter(os.listdir(PL_input_path), '*Intl Vol Rate - YTD*')
+workbook3 = fnmatch.filter(os.listdir(PL_input_path), '*Intl Vol Rate - MTD*')
+workbook4 = fnmatch.filter(os.listdir(PL_input_path), '*Intl Vol Rate - QTD*')
 print("File Names are " + workbook1[0] + ", " + workbook2[0] + ", " + workbook3[0] + ", " + workbook4[0])
 
 workbook_base = 'Intl Vol Rate'
-mtd_workbook_url = r'{}{}'.format(input_path,workbook3[0])
-ytd_workbook_url = r'{}{}'.format(input_path,workbook2[0])
-qtd_workbook_url = r'{}{}'.format(input_path,workbook4[0])
-asia_workbook_url = r'{}{}'.format(input_path,workbook1[0])
+mtd_workbook_url = r'{}{}'.format(PL_input_path,workbook3[0])
+ytd_workbook_url = r'{}{}'.format(PL_input_path,workbook2[0])
+qtd_workbook_url = r'{}{}'.format(PL_input_path,workbook4[0])
+asia_workbook_url = r'{}{}'.format(PL_input_path,workbook1[0])
 print("Workbook URLs are " + mtd_workbook_url + ", " + ytd_workbook_url + ", " + qtd_workbook_url + ", " + asia_workbook_url)
 
 workbook_template = r'{}{}.xltx' .format(template_path,workbook_base)
 print("Template URL is " + workbook_template)
 
-result_workbook = r'{}{}_combined.xlsx'.format(output_path,workbook_base)
-result_workbook_asia = r'{}{}_Asia_combined.xlsx'.format(output_path, workbook_base)
+result_workbook = r'{}{}_combined.xlsx'.format(PL_output_path,workbook_base)
+result_workbook_asia = r'{}{}_Asia_combined.xlsx'.format(PL_output_path, workbook_base)
 print("Result workbook URLs are " + result_workbook + ", " + result_workbook_asia)
 
 mtd_wb = openpyxl.load_workbook(mtd_workbook_url)  # Add file name
