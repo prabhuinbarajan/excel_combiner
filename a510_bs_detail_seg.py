@@ -1,13 +1,21 @@
 from merge_sheets_by_columns import  *
+from config_reader import *
 # Prepare the spreadsheets to copy from and paste too.
+(TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 
 # File to be copied
-period = 'P5 2020'
-workbook_name = 'A510-BS-Seg-Total {}'.format(period)
-template_name =  'A510-BS-Seg'
-workbook_url = 'report_samples/{}.xlsx'.format(workbook_name,  period)
-workbook_template = 'templates/{}.xltx' .format(template_name)
-result_workbook = 'results/{}_combined.xlsx'.format(workbook_name)
+workbook_base = 'HA01_A510 BS Detail By Segment'
+workbook = fnmatch.filter(os.listdir(TB_input_path), '*{}*'.format(workbook_base))
+workbook1 = workbook[0]
+print("File Names are " + workbook[0])
+workbook_url = r'{}{}'.format(TB_input_path,workbook[0])
+print("Workbook URLs are " + workbook_url)
+
+workbook_template = r'{}{}.xltx' .format(template_path,workbook_base)
+print("Template URL is " + workbook_template)
+
+result_workbook = r'{}{}_combined.xlsx'.format(TB_output_path,workbook1.rsplit('.',1)[0])
+print("Result workbook URLs are " + result_workbook)
 
 wb = openpyxl.load_workbook(workbook_url)  # Add file name
 
@@ -35,16 +43,16 @@ target_sheet['B5'].value = wb['BS Seg Total (3)']['F5'].value
 
 pl_regex = "^(BS Seg Total \([1-3]\))$"
 mergeColumns(wb, target_sheet , regex=pl_regex, startRowOffset=9, sourceStartRowOffset=9, sourceStartColOffset=5,
-             sourceEndColOffset=8, columnGap=2, enableRowGrouping=True, sourceEndRowOffset=7,applySourceOffsetFromFirst=False)
-copy_data_in_range(worksheet=target_sheet, reference_row=target_sheet[10], col_rng=range(57,88),
-                   row_range=range(11, target_sheet.max_row-1),  copy_format_column=6)
+             sourceEndColOffset=8, columnGap=2, enableRowGrouping=True, sourceEndRowOffset=8,applySourceOffsetFromFirst=False)
+copy_data_in_range(target_worksheet=target_sheet, source_worksheet=target_sheet, reference_row=target_sheet[10], col_rng=range(57, 88),
+                   row_range=range(11, target_sheet.max_row-1), copy_format_column=6)
 acquisition_regex =  "^(BS Seg Total \([4-5]\))$"
 mergeColumns(wb, target_sheet , regex=acquisition_regex, startRowOffset=9, startColOffset=90,  sourceStartRowOffset=9, sourceStartColOffset=5,
-             sourceEndColOffset=8, columnGap=2, enableRowGrouping=True, sourceEndRowOffset=7, applySourceOffsetFromFirst=True)
+             sourceEndColOffset=8, columnGap=2, enableRowGrouping=True, sourceEndRowOffset=8, applySourceOffsetFromFirst=True)
 
 
-copy_data_in_range(worksheet=target_sheet, reference_row=target_sheet[10], col_rng=range(127,136),
-                   row_range=range(11, target_sheet.max_row-1),  copy_format_column=6)
+copy_data_in_range(target_worksheet=target_sheet, source_worksheet=target_sheet, reference_row=target_sheet[10], col_rng=range(127, 136),
+                   row_range=range(11, target_sheet.max_row-1), copy_format_column=6)
 
 target.save(result_workbook)
 
