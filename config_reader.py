@@ -28,6 +28,10 @@ def get_config(env='PROD'):
         output_path = r'{}{}\Period {}\P{} {} Daily Reports\DAILYOUTPUT\\'.format(output_path,myyear,myper,myper,myyear)
     else:
         print("Environment parameter is not matching")
+    TB_input_path = input_path + os.path.sep + 'TB' + os.path.sep
+    PL_input_path = input_path + os.path.sep + 'PL' + os.path.sep
+    TB_output_path = output_path + os.path.sep + 'TB' + os.path.sep
+    PL_output_path = output_path + os.path.sep + 'PL' + os.path.sep
 
-    print(input_path,template_path,output_path,myyear,myper)
-    return (input_path,template_path,output_path,myyear,myper)
+    print(TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper)
+    return (TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper)
