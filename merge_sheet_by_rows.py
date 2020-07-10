@@ -92,19 +92,22 @@ def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData, r
     return [str(i) + ":" + str(j) for i, j in zip(firstList, lastList)] #, typeList
 
 
-def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, initialRowOffset, postRowShrinkage, groupRows=False, subtotalRows=False, totalColOffset = 0, totalColOffsetUpperBound = -1, subtotalFunctionNum = 9,   grandTotal = False, grandTotalTitle=None ):
+def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, initialRowOffset, postRowShrinkage, groupRows=False, subtotalRows=False, totalColOffset = 0, totalColOffsetUpperBound = -1, subtotalFunctionNum = 9,   grandTotal = False, grandTotalTitle=None, sourceColEndOffset=0 ):
 
     print("Processing...")
     itemList = list(filter(lambda i: regex_filter.match(i), workbook.sheetnames))
     firstSheet = None
     subtotalOffset = 1 if subtotalRows else 0
     listOfSubTotals = []
-
+    initial_start_row = startRow
     for sn in itemList:
         startRow += subtotalOffset
         sheet1 = workbook[sn]  # Add Sheet name
         firstSheet = sheet1 if sheet1 == None else sheet1
-        endCol = sheet1.max_column
+        if sheet1['A3'] and "contain any Rows" in sheet1['A3'].value:
+            print(sheet1['A3'].value)
+            continue
+        endCol = sheet1.max_column - sourceColEndOffset
         endRow = startRow+ sheet1.max_row-initialRowOffset-postRowShrinkage
         print('sc:{} sr: {} ec: {} er: {} sn: {} subtotal {} grandTotal {}'.format(startCol, startRow, endCol, endRow,  sn, subtotalRows, grandTotal))
         subtotalCoordinates  = pasteRange(startCol, startRow, endCol, endRow,
@@ -151,8 +154,8 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
                 temp = [str(i) + "+" + str(j) if len(i) > 0 else j for i, j in zip(grandTotalList, item)]
                 grandTotalList = temp
         else:
-            for j in range (startCol , endCol):
-                grandTotalList.append(worksheet.cell(startRow, j).coordinate + ":" + worksheet.cell(endRow , j).coordinate)
+            for j in range (totalColOffset , endCol+1):
+                grandTotalList.append(worksheet.cell(initial_start_row, j).coordinate + ":" + worksheet.cell(endRow-1 , j).coordinate)
         if totalColOffsetUpperBound > 0:
             endCol = totalColOffsetUpperBound
         for j in range(totalColOffset, endCol, 1):
