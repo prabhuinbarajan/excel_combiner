@@ -9,25 +9,25 @@ def apply_match_to_sheet(source, destination) :
     destination['A6'].value = match.group(2) if match else None
     #destination['A8'].value = match.group(3) if match else None
 
-(input_path,template_path,output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
+(TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 # File to be copied
 
-mtd_workbook = fnmatch.filter(os.listdir(input_path), '*Comm and Fee Rate Volume-MTD*')
-qtd_workbook = fnmatch.filter(os.listdir(input_path), '*Comm and Fee Rate Volume-QTD*')
-ytd_workbook = fnmatch.filter(os.listdir(input_path), '*Comm and Fee Rate Volume-YTD*')
+mtd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-MTD*')
+qtd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-QTD*')
+ytd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-YTD*')
 print("File Names are " + mtd_workbook[0] + ", " + qtd_workbook[0] + ", " + ytd_workbook[0])
 
 workbook_base = 'Comm and Fee Rate Volume'
 
-mtd_workbook_url = r'{}{}'.format(input_path,mtd_workbook[0])
-ytd_workbook_url = r'{}{}'.format(input_path,ytd_workbook[0])
-qtd_workbook_url = r'{}{}'.format(input_path,qtd_workbook[0])
+mtd_workbook_url = r'{}{}'.format(PL_input_path,mtd_workbook[0])
+ytd_workbook_url = r'{}{}'.format(PL_input_path,ytd_workbook[0])
+qtd_workbook_url = r'{}{}'.format(PL_input_path,qtd_workbook[0])
 print("Workbook URLs are " + mtd_workbook_url + ", " + ytd_workbook_url + ", " + qtd_workbook_url)
 
 workbook_template = r'{}{}.xltx' .format(template_path,workbook_base)
 print("Template URL is " + workbook_template)
 
-result_workbook = r'{}P{} {} HA06_{}_combined.xlsx'.format(output_path,myper,myyear,workbook_base)
+result_workbook = r'{}P{} {} HA06_{}_combined.xlsx'.format(PL_output_path,myper,myyear,workbook_base)
 print("Result workbook URLs are " + result_workbook)
 
 mtd_wb = openpyxl.load_workbook(mtd_workbook_url)  # Add file name
