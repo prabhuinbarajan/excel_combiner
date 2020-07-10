@@ -131,8 +131,8 @@ def mergeColumns(source_workbook, target_worksheet, regex=r".*", sourceStartRowO
     # You can save the template as another file to create a new file here too.s
     print("Range transferred!")
 
-def copy_data_in_range(worksheet=None, reference_row=None, col_rng = None, row_range=None, copy_format_column=-1):
+def copy_data_in_range(target_worksheet=None, source_worksheet=None, reference_row=None, col_rng = None, row_range=None, copy_format_column=-1):
     pasteRangeCols(col_rng.start, row_range.start, col_rng.stop, row_range.stop,
-                   worksheet, worksheet,
+                   target_worksheet, source_worksheet,
                    sourceStartRowOffset=reference_row[0].row, extend_data = True,
                    style_col=copy_format_column)
