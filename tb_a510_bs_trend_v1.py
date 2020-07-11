@@ -33,7 +33,7 @@ target_sheet = target['Sheet']
 source_header_worksheet = source_workbook.worksheets[1]
 
 
-copy_data_in_range(target_worksheet=target_sheet, source_worksheet=source_header_worksheet, reference_row=source_header_worksheet[6], col_rng=range(1, source_header_worksheet.max_column - 11),
+copy_data_in_range(target_worksheet=target_sheet, source_worksheet=source_header_worksheet, reference_row=source_header_worksheet[6], col_rng=range(7, source_header_worksheet.max_column - 11),
                    row_range=range(9, 9))
 
 first = True
