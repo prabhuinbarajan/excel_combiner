@@ -36,7 +36,7 @@ source_header_worksheet = source_workbook.worksheets[1]
 copy_data_in_range(target_worksheet=target_sheet, source_worksheet=source_header_worksheet, reference_row=source_header_worksheet[6], col_rng=range(1, source_header_worksheet.max_column - 11),
                    row_range=range(9, 9))
 
-first = False
+first = True
 max_row = 9
 
 for logical_group in logical_groups:
@@ -57,8 +57,7 @@ for logical_group in logical_groups:
                                            grandTotal=True, grandTotalTitle=logical_group,sourceColEndOffset=10)
     grandtotalRows.append(max_row)
     if first:
-        target_sheet['A4'].value = basesheet['A4'].value
-        target_sheet['A6'].value = basesheet['K7'].value
+        target_sheet['A5'].value = basesheet['A4'].value
         first = False
     #add_separator(target_sheet, startCol=1, endCol=26, row=max_row + 1)
     max_row+=1
