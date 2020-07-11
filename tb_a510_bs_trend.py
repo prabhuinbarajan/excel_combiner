@@ -1,13 +1,15 @@
 import openpyxl
-from openpyxl.formula.translate import Translator
-
-# Prepare the spreadsheets to copy from and paste too.
-
-# File to be copied
+from config_reader import *
 import pandas as pd
 import re
-
 from openpyxl.utils.dataframe import dataframe_to_rows
+
+
+# Prepare the spreadsheets to copy from and paste too.
+(TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
+
+# File to be copied
+
 
 
 def pasteRange(ws, rows, startRow,totalsFrom, title=''):
@@ -37,17 +39,30 @@ def pasteRange(ws, rows, startRow,totalsFrom, title=''):
                 ws.cell(row=lastRow+1, column=c_idx,  value='=SUM('+range_text + ')')
     return lastRow+1, lr
 
+pCY_workbook = fnmatch.filter(os.listdir(TB_input_path), '*A510G_2020*')
+pPY_workbook = fnmatch.filter(os.listdir(TB_input_path), '*A510G_2019*')
+workbook = fnmatch.filter(os.listdir(TB_input_path), '*A510-BSTNDLC Detail - by Account Category*')
+workbook1 = pCY_workbook[0]
+workbook2 = pPY_workbook[0]
+workbook3 = workbook[0]
+print("File Names are " + pCY_workbook[0] + ", " + pPY_workbook[0] + ", " + workbook[0])
 
-pCY_data_file = 'report_samples/Actual-P1-P5-2020.csv'
-pPY_data_file = 'report_samples/Actual-P1-P13-2019.csv'
+pCY_data_file = r'{}{}'.format(TB_input_path,pCY_workbook[0])
+pPY_data_file = r'{}{}'.format(TB_input_path,pPY_workbook[0])
+workbook_url = r'{}{}'.format(TB_input_path,workbook[0])
+account_meta = r'{}account_meta.csv'.format(TB_input_path)
+print("Workbook URLs are " + pCY_data_file + ", " + pPY_data_file + ", " + workbook_url + ", " + account_meta)
+
 interested_period = 'P4 2020'
 period_end_date = '4/18/2020'
 num_periods = 13
-account_meta = 'config/account_meta.csv'
-workbook = 'A510-MOEND_606'
-workbook_url = 'report_samples/{}.xlsx'.format(workbook)
-workbook_template = 'templates/{}.xltx' .format(workbook)
-result_workbook = 'results/{}_combined.xlsx'.format(workbook)
+
+workbook_template = r'{}{}.xltx' .format(template_path,workbook)
+print("Template URL is " + workbook_template)
+
+result_workbook = r'{}{}_combined.xlsx'.format(TB_output_path,workbook)
+print("Result workbook URLs are " + result_workbook)
+
 period_columns_regex = re.compile(r'^P[0-9]*')
 
 account_meta = pd.read_csv(account_meta, dtype=str)
