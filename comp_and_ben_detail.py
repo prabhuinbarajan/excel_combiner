@@ -57,7 +57,7 @@ for timeframe in timeframes:
                 grandtotalRows.append(worksheet[startRow])
             if first:
                 worksheet['A4'].value = basesheet['A4'].value
-                worksheet['A6'].value = basesheet['K7'].value
+                worksheet['A6'].value = basesheet['L7'].value
                 first = False
         add_separator(worksheet,startCol=1, endCol=26,row=max_row+1)
         max_row+=1
