@@ -159,7 +159,7 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
                 grandTotalList.append(worksheet.cell(initial_start_row, j).coordinate + ":" + worksheet.cell(endRow-1 , j).coordinate)
         if totalColOffsetUpperBound > 0:
             endCol = totalColOffsetUpperBound
-        for j in range(totalColOffset, endCol, 1):
+        for j in range(totalColOffset, endCol+1, 1):
             target = worksheet.cell(row=endRow, column=j)
             source = worksheet.cell(row=endRow-2, column=j)
             if source.data_type == 'f':

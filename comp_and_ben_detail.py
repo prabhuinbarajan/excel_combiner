@@ -46,8 +46,8 @@ for timeframe in timeframes:
             regex_pattern = r'^({})'.format(regex_str)
             selector_regex = re.compile(regex_pattern)
             print(regex_pattern)
-            startRow = max_row
-            basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow+1, initialRowOffset=9,
+            startRow = max_row + 1
+            basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow, initialRowOffset=9,
                                                    postRowShrinkage=8, subtotalRows=sub_total_group_flag,
                                                    totalColOffset=6, groupRows=True, totalColOffsetUpperBound=26,
                                                    grandTotal=grand_total_group_flag, grandTotalTitle=subtotal_group)
