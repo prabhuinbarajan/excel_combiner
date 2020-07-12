@@ -24,8 +24,8 @@ columns = next(metadata)[0:]
 metadata_df = pd.DataFrame(metadata, columns=columns)
 logical_groups = metadata_df['LogicalGroup'].unique().tolist()
 
-grandtotalRows = []
 for timeframe in timeframes:
+    grandtotalRows = []
     worksheet = target[timeframe]
     first = True
     max_row = 8
@@ -38,11 +38,11 @@ for timeframe in timeframes:
             regex_str = "|".join(str(x) + "-" + timeframe for x in row_filter['Sheet'].tolist())
             sub_total_group_flag = subtotal_group is not None
             grand_total_group_flag = subtotal_group and len(row_filter) > 1
-            regex_pattern = r'^({})'.format(regex_str)
+            regex_pattern = r'^({})$'.format(regex_str)
             selector_regex = re.compile(regex_pattern)
             print(regex_pattern)
-            startRow = max_row
-            basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow+1, initialRowOffset=9,
+            startRow = max_row+1
+            basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow, initialRowOffset=9,
                                                    postRowShrinkage=8, subtotalRows=sub_total_group_flag,
                                                    totalColOffset=6, groupRows=True, totalColOffsetUpperBound=26,
                                                    grandTotal=grand_total_group_flag, grandTotalTitle=subtotal_group)
@@ -51,7 +51,8 @@ for timeframe in timeframes:
             if len(subtotal_groups) == 1 :
                 grandtotalRows.append(worksheet[startRow])
             if first:
-                worksheet['A4'].value = basesheet['A4'].value
+
+                worksheet['A4'].value = "'= {} & ' / '  & '{}' ".format(basesheet['A4'].value, timeframe) if basesheet['A7'].value else basesheet['A4'].value
                 worksheet['A6'].value = basesheet['K7'].value
                 first = False
         add_separator(worksheet,startCol=1, endCol=26,row=max_row+1)
