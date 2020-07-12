@@ -29,8 +29,8 @@ columns = next(metadata)[0:]
 metadata_df = pd.DataFrame(metadata, columns=columns)
 logical_groups = metadata_df['LogicalGroup'].unique().tolist()
 
-grandtotalRows = []
 for timeframe in timeframes:
+    grandtotalRows = []
     worksheet = target[timeframe]
     first = True
     max_row = 8
