@@ -4,7 +4,7 @@ from config_reader import *
 (TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 
 # File to be copied
-workbook_base = 'HA01_A510 BS Detail By Segment'
+workbook_base = 'TB01_A510 BS Detail By Segment'
 workbook = fnmatch.filter(os.listdir(TB_input_path), '*{}*'.format(workbook_base))
 workbook1 = workbook[0]
 print("File Names are " + workbook[0])
