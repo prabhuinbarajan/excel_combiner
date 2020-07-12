@@ -45,7 +45,7 @@ for logical_group in logical_groups:
         metadata_df.loc[metadata_df.LogicalGroup == logical_group]
     regex_str = "|".join(str(x[:31]).replace("(", "\(").replace(")", "\)")  for x in row_filter['Sheet Name'].tolist())
     regex_pattern = r'^({})$'.format(regex_str)
-
+    natural_state = row_filter.iloc[0].values[2]
     selector_regex = re.compile(regex_pattern)
     print(regex_pattern)
 
@@ -54,7 +54,7 @@ for logical_group in logical_groups:
     basesheet, max_row = createMergedSheet(target_sheet, selector_regex, source_workbook, startCol=1, startRow=startRow + 1, initialRowOffset=9,
                                            postRowShrinkage=8, subtotalRows=False,
                                            totalColOffset=8, groupRows=True,
-                                           grandTotal=True, grandTotalTitle=logical_group,sourceColEndOffset=10)
+                                           grandTotal=True, grandTotalTitle=logical_group,sourceColEndOffset=10,natural_state=natural_state)
     grandtotalRows.append(max_row)
     if first:
         target_sheet['A5'].value = basesheet['A4'].value

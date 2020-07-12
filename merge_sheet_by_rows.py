@@ -58,11 +58,12 @@ def apply_style(rows, border=thick_top_border, font=bold_font, startCol = 0, end
 
 # Paste range
 # Paste data from copyRange into template sheet
-def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData, rowOffset = 0 , colOffset = 0):
+def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData, rowOffset = 0 , colOffset = 0,natural_state=1):
     firstList = []
     lastList = []
     #typeList = []
     countRow = 1
+    natural_state = 1 if natural_state > 0 else -1
     if startRow == endRow :
         endRow = startRow +1
     for i in list(range(startRow, endRow , 1)):
@@ -76,7 +77,7 @@ def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData, r
             if source.data_type == 'f':
                 target.value = Translator(source.value, source.coordinate).translate_formula(target.coordinate)
             else :
-                target.value = source.value
+                target.value = source.value * natural_state if source.value and source.data_type == 'n' and natural_state < 0 else source.value
             #if source.has_style:
             #    target._style = copy(source._style)
             copy_style(source, target)
@@ -92,7 +93,7 @@ def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData, r
     return [str(i) + ":" + str(j) for i, j in zip(firstList, lastList)] #, typeList
 
 
-def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, initialRowOffset, postRowShrinkage, groupRows=False, subtotalRows=False, totalColOffset = 0, totalColOffsetUpperBound = -1, subtotalFunctionNum = 9,   grandTotal = False, grandTotalTitle=None, sourceColEndOffset=0 ):
+def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, initialRowOffset, postRowShrinkage, groupRows=False, subtotalRows=False, totalColOffset = 0, totalColOffsetUpperBound = -1, subtotalFunctionNum = 9,   grandTotal = False, grandTotalTitle=None, sourceColEndOffset=0,natural_state=1 ):
 
     print("Processing...")
     itemList = list(filter(lambda i: regex_filter.match(i), workbook.sheetnames))
@@ -109,9 +110,9 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
             continue
         endCol = sheet1.max_column - sourceColEndOffset
         endRow = startRow+ sheet1.max_row-initialRowOffset-postRowShrinkage
-        print('sc:{} sr: {} ec: {} er: {} sn: {} subtotal {} grandTotal {}'.format(startCol, startRow, endCol, endRow,  sn, subtotalRows, grandTotal))
+        print('sc:{} sr: {} ec: {} er: {} sn: {} subtotal {} grandTotal {} natural_state: {}'.format(startCol, startRow, endCol, endRow,  sn, subtotalRows, grandTotal,natural_state))
         subtotalCoordinates  = pasteRange(startCol, startRow, endCol, endRow,
-                                  worksheet, sheet1, initialRowOffset)  # Change the 4 number values
+                                  worksheet, sheet1, initialRowOffset,natural_state=natural_state)  # Change the 4 number values
 
         if subtotalRows:
             subTotalTitle = sn.replace("-MTD","").replace("-YTD","").replace("-QTD","")
