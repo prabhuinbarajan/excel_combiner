@@ -19,22 +19,33 @@ CALL %venv_path%\Scripts\activate.bat
 CALL pip install -r requirements.txt
 ECHO *** MAIN SCRIPT START  ***
 ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
-
 ECHO *** CALLING POST PROCESSING SCRIPTS ***
 ECHO *** CALLING MULTIPLE BU PROCESSING SCRIPT ***
-python test1.py %app_env%
+REM python test1.py %app_env%
+REM ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 python tb_multiple_bus_lc.py %app_env%
+ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+ECHO *** CALLING TB MOEND BS TREND DETAIL SCRIPT ***
 python tb_a510_bs_trend.py %app_env%
+ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+ECHO *** CALLING International Volume Rate SCRIPT ***
 python intl_vol_rate.py %app_env%
+ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+ECHO *** CALLING COMP & BENEFIT DETAIL SCRIPT ***
 python comp_and_ben_detail.py %app_env%
+ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+ECHO *** CALLING COMM FEE RATE SCRIPT ***
 python comm_fee_rate_vol.py %app_env%
+ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+ECHO *** CALLING A510 BS DETAIL SEGMENT SCRIPT ***
 python a510_bs_detail_seg.py %app_env%
+ECHO %date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 ECHO *** POST PROCESSING SCRIPTS COMPLETE***
 ECHO *** CALLING FOLDER RENAME SCRIPT ***
-REM python folder_rename.py %app_env%
+python folder_rename.py %app_env%
 ECHO *** FOLDER RENAME SCRIPT COMPLETE***
 deactivate
-ECHO *** SCRIPT COMPLETED  ***
+ECHO *** MAIN SCRIPT COMPLETED  ***
 )
 :EXIT
           
