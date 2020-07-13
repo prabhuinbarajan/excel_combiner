@@ -24,11 +24,11 @@ ECHO *** CALLING POST PROCESSING SCRIPTS ***
 ECHO *** CALLING MULTIPLE BU PROCESSING SCRIPT ***
 python test1.py %app_env%
 python tb_multiple_bus_lc.py %app_env%
-REM python tb_a510_bs_trend.py %app_env%
-REM python intl_vol_rate.py %app_env%
-REM python comp_and_ben_detail.py %app_env%
-REM python comm_fee_rate_vol.py %app_env%
-REM python a510_bs_detail_seg.py %app_env%
+python tb_a510_bs_trend.py %app_env%
+python intl_vol_rate.py %app_env%
+python comp_and_ben_detail.py %app_env%
+python comm_fee_rate_vol.py %app_env%
+python a510_bs_detail_seg.py %app_env%
 ECHO *** POST PROCESSING SCRIPTS COMPLETE***
 ECHO *** CALLING FOLDER RENAME SCRIPT ***
 REM python folder_rename.py %app_env%
