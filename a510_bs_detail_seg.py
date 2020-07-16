@@ -29,7 +29,7 @@ for segment_group in segment_groups:
     target_sheet = target[segment_group]
     print (seg_cy_regex)
     mergeColumns(wb, target_sheet, regex=seg_cy_regex, startRowOffset=8, sourceStartRowOffset=4, sourceStartColOffset=5,
-                 sourceEndColOffset=7, enableRowGrouping=True, enableColGrouping=True,  sourceEndRowOffset=10, applySourceOffsetFromFirst=False)
+                 sourceEndColOffset=7, enableRowGrouping=True, enableColGrouping=True,  sourceEndRowOffset=8, applySourceOffsetFromFirst=False)
     target_sheet.column_dimensions.group(start='B', end='E', hidden=True, outline_level=3)
 
 #target.save(result_workbook)
