@@ -6,3 +6,7 @@ XlsxWriter==1.2.9
 jupyter==1.0.0
 openpyxl==3.0.3
 Pillow==7.1.2
+flask-restx==0.2.0
+pynng==0.5.0
+jsonpickle==1.4.1
+zmq
