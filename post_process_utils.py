@@ -1,5 +1,4 @@
 import json
-import pickle
 import zmq
 
 port = "5556"
@@ -30,7 +29,6 @@ class MQPublisher:
             MQPublisher.__instance = self
 
     def publish(self, obj, protocol=-1):
-        #p = pickle.dumps(obj, protocol)
         self.pub_socket.send_string(_topic, zmq.SNDMORE)
         self.pub_socket.send_json(obj.__dict__)
         return
@@ -58,16 +56,3 @@ class PostProcessTask:
     def getPostProcessPayload(cls, obj):
         payload = json.dumps(obj.__dict__, indent=4)
         return payload
-
-# pl = '{"id": "'+ str(uuid.uuid4()) + '", "filepath": "path1", "period": "P6", "year": 2020}'
-# ppObj = PostProcessTask.getPostProcessTask(pl)
-# ppStr = PostProcessTask.getPostProcessPayload(ppObj)
-# print(ppStr)
-
-
-#import time
-
-#from pynng import Push0, Pull0, Timeout
-#addr = 'tcp://127.0.0.1:31313'
-#push= Push0(listen=addr)
-#time.sleep(0.01)
