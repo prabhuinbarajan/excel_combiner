@@ -12,9 +12,9 @@ def apply_match_to_sheet(source, destination) :
 (TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 # File to be copied
 
-mtd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-MTD*')
-qtd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-QTD*')
-ytd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-YTD*')
+mtd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume-*')
+qtd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume (1)*')
+ytd_workbook = fnmatch.filter(os.listdir(PL_input_path), '*Comm and Fee Rate Volume (2)*')
 print("File Names are " + mtd_workbook[0] + ", " + qtd_workbook[0] + ", " + ytd_workbook[0])
 
 workbook_base = 'Comm and Fee Rate Volume'
