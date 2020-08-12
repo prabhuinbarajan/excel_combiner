@@ -1,7 +1,7 @@
 
 from config_reader import *
 import datetime
-import shutil
+# import shutil
 
 (TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 print(os.getcwd())
@@ -23,13 +23,13 @@ cal_year = (updated_date_time.strftime("%y"))
 new_folder_name = '{}.{}.{}_11.00{}'.format(month, day, cal_year, am_pm)
 print(new_folder_name)
 
-#folder_path = r'{}'.format(TB_input_path)
-dest = r'{}{}\Period {}\P{} {} Daily Reports\{}{}PL'.format(config.get('PROD', 'input_path'),myyear,myper,myper,myyear,new_folder_name,os.path.sep)
-print(dest)
-os.chdir(PL_input_path)
-print(PL_input_path)
-os.chdir('..{}'.format(os.path.sep))
-shutil.copytree('PL',dest)
+# folder_path = r'{}'.format(TB_input_path)
+# dest = r'{}{}\Period {}\P{} {} Daily Reports\{}{}PL'.format(config.get('PROD', 'input_path'),myyear,myper,myper,myyear,new_folder_name,os.path.sep)
+# print(dest)
+# os.chdir(PL_input_path)
+# print(PL_input_path)
+# os.chdir('..{}'.format(os.path.sep))
+# shutil.copytree('PL',dest)
 
 print(TB_input_path)
 os.chdir(TB_input_path)

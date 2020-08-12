@@ -4,7 +4,7 @@
 CLS
 set "app_env=%1"
 if "%app_env%"=="" set "app_env=PROD_TEST"
-set "app_env=PROD_TEST"
+REM set "app_env=PROD_TEST"
 echo %app_env%
 set hh=%time:~0,2%
 ECHO %hh%
