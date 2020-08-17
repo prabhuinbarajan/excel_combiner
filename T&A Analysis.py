@@ -31,6 +31,7 @@ logical_groups = metadata_df['LogicalGroup'].unique().tolist()
 
 for timeframe in timeframes:
     grandtotalRows = []
+    balancecheckRows = []
     worksheet = target[timeframe]
     first = True
     max_row = 8
@@ -47,21 +48,35 @@ for timeframe in timeframes:
             selector_regex = re.compile(regex_pattern)
             print(regex_pattern)
             startRow = max_row + 1
-            basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow, initialRowOffset=9,
+            if row_filter['Sheet'].tolist()[0] != 'XCEL Check':
+                basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow, initialRowOffset=9,
                                                    postRowShrinkage=8, subtotalRows=sub_total_group_flag,
                                                    totalColOffset=5, groupRows=True, totalColOffsetUpperBound=100,
                                                    grandTotal=grand_total_group_flag, grandTotalTitle=subtotal_group)
-            if(grand_total_group_flag) :
-                grandtotalRows.append(worksheet[max_row])
-            if len(subtotal_groups) == 1 :
                 grandtotalRows.append(worksheet[startRow])
+            else :
+                apply_grand_total(grandtotalRows, worksheet, max_row, 5, 100, worksheet[10],grandTotalTitle="Total BHN")
+                balancecheckRows.append(worksheet[max_row])
+                add_separator(worksheet, startCol=1, endCol=100, row=max_row + 1)
+                add_separator(worksheet, startCol=1, endCol=100, row=max_row + 2)
+                add_separator(worksheet, startCol=1, endCol=100, row=max_row + 3)
+                add_separator(worksheet, startCol=1, endCol=100, row=max_row + 4)
+                add_separator(worksheet, startCol=1, endCol=100, row=max_row + 5)
+                max_row += 5
+                startRow = max_row + 1
+                basesheet, max_row = createMergedSheet(worksheet, selector_regex, wb, startCol=1, startRow=startRow, initialRowOffset=9,
+                                                   postRowShrinkage=8, subtotalRows=sub_total_group_flag,
+                                                   totalColOffset=5, groupRows=True, totalColOffsetUpperBound=100,
+                                                   grandTotal=grand_total_group_flag, grandTotalTitle=subtotal_group)
+                balancecheckRows.append(worksheet[max_row-2])
+                balancecheck_start_row = max_row-2
             if first:
                 worksheet['A5'].value = basesheet['F5'].value
               #  worksheet['A6'].value = basesheet['L7'].value
                 first = False
         add_separator(worksheet,startCol=1, endCol=100,row=max_row+1)
         max_row+=1
-#    apply_grand_total(grandtotalRows, worksheet, max_row, 4 ,100, worksheet[10], grandTotalTitle="Total BHN" )
-    add_separator(worksheet,startCol=1, endCol=100,row=max_row)
-
+    apply_grand_total(balancecheckRows, worksheet, max_row, 5 ,100, worksheet[10], grandTotalTitle="BalanceCheck" )
+    add_separator(worksheet, startCol=1, endCol=26, row=max_row)
+    worksheet.row_dimensions.group(start=balancecheck_start_row, end=max_row, hidden=True)
 target.save(result_workbook)

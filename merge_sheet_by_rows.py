@@ -23,7 +23,10 @@ def apply_grand_total(grandtotalRows, worksheet, endRow , startCol , endCol, ref
         else:
             sumFormula = ''
             for sumRow in grandtotalRows:
-                sumFormula = sumRow[j].coordinate if sumFormula == '' else sumFormula + '+' + sumRow[j].coordinate
+                if grandTotalTitle == 'BalanceCheck' :
+                    sumFormula = sumRow[j].coordinate if sumFormula == '' else sumFormula + '-' + sumRow[j].coordinate
+                else :
+                    sumFormula = sumRow[j].coordinate if sumFormula == '' else sumFormula + '+' + sumRow[j].coordinate
             target.value = "=SUM(" + sumFormula + ")"
         copy_style(source, target)
     apply_style([row], startCol=startCol, endCol=endCol)
