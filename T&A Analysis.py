@@ -1,6 +1,7 @@
 from merge_sheet_by_rows import *
 import pandas as pd
 from config_reader import *
+import xlwings as xw
 
 (TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 
@@ -72,7 +73,7 @@ for timeframe in timeframes:
                 balancecheck_start_row = max_row-2
             if first:
                 worksheet['A5'].value = basesheet['F5'].value
-              #  worksheet['A6'].value = basesheet['L7'].value
+                worksheet['A3'].value = basesheet['A3'].value
                 first = False
         add_separator(worksheet,startCol=1, endCol=100,row=max_row+1)
         max_row+=1
@@ -80,3 +81,17 @@ for timeframe in timeframes:
     add_separator(worksheet, startCol=1, endCol=26, row=max_row)
     worksheet.row_dimensions.group(start=balancecheck_start_row, end=max_row, hidden=True)
 target.save(result_workbook)
+
+wb1 = xw.Book(workbook_url)
+wb2 = xw.Book(result_workbook)
+
+# copying T&A Analysis sheet as first sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
+ws1 = wb1.sheets(2)
+ws1.api.Copy(Before=wb2.sheets(1).api)
+
+# copying BHN Acquisition sheet as second sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
+ws2 = wb1.sheets(3)
+ws2.api.Copy(Before=wb2.sheets(2).api)
+
+wb2.save()
+wb2.app.quit()
