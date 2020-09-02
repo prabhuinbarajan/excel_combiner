@@ -104,6 +104,8 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
     subtotalOffset = 1 if subtotalRows else 0
     listOfSubTotals = []
     initial_start_row = startRow
+    endRow = startRow+1
+    non_empty_sheets=0
     for sn in itemList:
         startRow += subtotalOffset
         sheet1 = workbook[sn]  # Add Sheet name
@@ -111,6 +113,7 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
         if sheet1['A3'] and "contain any Rows" in sheet1['A3'].value:
             print(sheet1['A3'].value)
             continue
+        non_empty_sheets+=1
         endCol = sheet1.max_column - sourceColEndOffset
         endRow = startRow+ sheet1.max_row-initialRowOffset-postRowShrinkage
         print('sc:{} sr: {} ec: {} er: {} sn: {} subtotal {} grandTotal {} natural_state: {}'.format(startCol, startRow, endCol, endRow,  sn, subtotalRows, grandTotal,natural_state))
@@ -146,7 +149,7 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
         startRow=endRow
 
         #break
-    if grandTotal:
+    if grandTotal and non_empty_sheets > 0 :
         startCell = worksheet.cell(row=endRow, column=1)
         startCell.value = "Total" if grandTotalTitle is None else grandTotalTitle
         startCell.font = bold_font
@@ -162,9 +165,9 @@ def createMergedSheet(worksheet, regex_filter, workbook, startCol, startRow, ini
                 grandTotalList.append(worksheet.cell(initial_start_row, j).coordinate + ":" + worksheet.cell(endRow-1 , j).coordinate)
         if totalColOffsetUpperBound > 0:
             endCol = totalColOffsetUpperBound
-        for j in range(totalColOffset, endCol-1, 1):
+        for j in range(totalColOffset, endCol, 1):
             target = worksheet.cell(row=endRow, column=j)
-            source = worksheet.cell(row=endRow-2, column=j)
+            source = worksheet.cell(row=endRow-1, column=j)
             if source.data_type == 'f':
                 target.value = Translator(source.value, source.coordinate).translate_formula(target.coordinate)
             else:
