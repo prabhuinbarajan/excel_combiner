@@ -40,8 +40,8 @@ cmd /v /c "echo !date!:!time!"
 ECHO *** CALLING A510 BS DETAIL SEGMENT SCRIPT ***
 python a510_bs_detail_seg.py %app_env%
 cmd /v /c "echo !date!:!time!"
-ECHO *** CALLING TRAINING AND ACQUISITION ANALYSIS SCRIPT ***
-python "T&A Analysis.py %app_env%"
+ECHO *** CALLING TRANSITION AND ACQUISITION ANALYSIS SCRIPT ***
+python "T&A Analysis.py" %app_env%
 cmd /v /c "echo !date!:!time!"
 ECHO *** POST PROCESSING SCRIPTS COMPLETE***
 ECHO *** CALLING FOLDER RENAME SCRIPT ***
