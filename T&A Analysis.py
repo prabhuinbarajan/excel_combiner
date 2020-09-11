@@ -86,16 +86,16 @@ wb1 = xw.Book(workbook_url)
 wb2 = xw.Book(result_workbook)
 
 # copying XCEL Project sheet as third sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
-ws1 = wb1.sheets('XCEL Project')
-ws1.api.Copy(Before=wb2.sheets(1).api)
+#ws1 = wb1.sheets('XCEL Project')
+#ws1.api.Copy(Before=wb2.sheets(1).api)
 
 # copying BHN Acquisition sheet as second sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
-ws2 = wb1.sheets('BHN Acquisition')
-ws2.api.Copy(Before=wb2.sheets(1).api)
+#ws2 = wb1.sheets('BHN Acquisition')
+#ws2.api.Copy(Before=wb2.sheets(1).api)
 
 # copying T&A Analysis sheet as first sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
-ws3 = wb1.sheets('T&A Analysis')
-ws3.api.Copy(Before=wb2.sheets(1).api)
+#ws3 = wb1.sheets('T&A Analysis')
+#ws3.api.Copy(Before=wb2.sheets(1).api)
 
-wb2.save()
+#wb2.save()
 wb2.app.quit()
