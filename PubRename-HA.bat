@@ -44,9 +44,9 @@ ECHO *** CALLING TRANSITION AND ACQUISITION ANALYSIS SCRIPT ***
 python "T&A Analysis.py" %app_env%
 cmd /v /c "echo !date!:!time!"
 ECHO *** POST PROCESSING SCRIPTS COMPLETE***
-ECHO *** CALLING FOLDER RENAME SCRIPT ***
-python folder_rename.py %app_env%
-ECHO *** FOLDER RENAME SCRIPT COMPLETE***
+REM ECHO *** CALLING FOLDER RENAME SCRIPT ***
+REM python folder_rename.py %app_env%
+REM ECHO *** FOLDER RENAME SCRIPT COMPLETE***
 deactivate
 ECHO *** MAIN SCRIPT COMPLETED  ***
 )
