@@ -1,7 +1,8 @@
 from merge_sheet_by_rows import *
 import pandas as pd
 from config_reader import *
-#import xlwings as xw
+from win32com.client import Dispatch
+
 
 (TB_input_path,PL_input_path,template_path,TB_output_path,PL_output_path,myyear,myper) = get_config(env=sys.argv[1] if len(sys.argv) > 1 else None)
 
@@ -82,20 +83,21 @@ for timeframe in timeframes:
     worksheet.row_dimensions.group(start=balancecheck_start_row, end=max_row, hidden=True)
 target.save(result_workbook)
 
-#wb1 = xw.Book(workbook_url)
-#wb2 = xw.Book(result_workbook)
+xl = Dispatch("Excel.Application")
+xl.Visible = True  # You can remove this line if you don't want the Excel application to be visible
 
-# copying XCEL Project sheet as third sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
-#ws1 = wb1.sheets('XCEL Project')
-#ws1.api.Copy(wb1.sheets(1).api,Before=wb2.sheets(1).api)
+wb1 = xl.Workbooks.Open(Filename=workbook_url)
+wb2 = xl.Workbooks.Open(Filename=result_workbook)
 
-# copying BHN Acquisition sheet as second sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
-#ws2 = wb1.sheets('BHN Acquisition')
-#ws2.api.Copy(Before=wb2.sheets(1).api)
+ws1 = wb1.Worksheets('XCEL Project')
+ws1.Copy(Before=wb2.Worksheets(1))
 
-# copying T&A Analysis sheet as first sheet in combined workbook from the source - Data values, formatting and everything else in the sheet is copied
-#ws3 = wb1.sheets('T&A Analysis')
-#ws3.api.Copy(Before=wb2.sheets(1).api)
+ws2 = wb1.Worksheets('BHN Acquisition')
+ws2.Copy(Before=wb2.Worksheets(1))
 
-#wb2.save()
-#wb2.app.quit()
+ws3 = wb1.Worksheets('T&A Analysis')
+ws3.Copy(Before=wb2.Worksheets(1))
+
+wb1.Close(SaveChanges=False)
+wb2.Close(SaveChanges=True)
+xl.Quit()
